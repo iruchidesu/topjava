@@ -1,10 +1,10 @@
-package ru.javawebinar.topjava.Service;
+package ru.javawebinar.topjava.dao;
 
 import ru.javawebinar.topjava.model.Meal;
 
 import java.util.List;
 
-public interface MealService {
+public interface DaoInterface {
     /**
      * Create new Meal
      *
@@ -17,7 +17,7 @@ public interface MealService {
      *
      * @return list of meals
      */
-    List<Meal> readAll();
+    List<Meal> getAll();
 
     /**
      * Return meal by ID
@@ -25,16 +25,16 @@ public interface MealService {
      * @param id - ID meal
      * @return - object meal
      */
-    Meal read(int id);
+    Meal getOne(long id);
 
     /**
-     * Update meal with ID
+     * Update meal by ID
      *
      * @param meal - meal object
      * @param id   - id meal
      * @return - true is data is updated, else false
      */
-    boolean update(Meal meal, int id);
+    boolean update(Meal meal, long id);
 
     /**
      * Delete meal
@@ -42,5 +42,5 @@ public interface MealService {
      * @param id - id meal
      * @return - true if meal is deleted, else false
      */
-    boolean delete(int id);
+    boolean delete(long id);
 }

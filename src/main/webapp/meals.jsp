@@ -11,27 +11,25 @@
 <h3><a href="index.html">Home</a></h3>
 <hr>
 <h2>Meals</h2>
-
+<p><a href="meals?action=insert">Add Meal</a></p>
 <table>
     <thead>
     <tr>
         <th>Date</th>
         <th>Description</th>
         <th>Calories</th>
-        <th></th>
-        <th></th>
+        <th colspan="2">Action</th>
     </tr>
     </thead>
     <tbody>
 
-    <jsp:useBean id="mealToList" scope="request" type="java.util.List"/>
-    <c:forEach items="${mealToList}" var="mealTo">
+    <c:forEach items="${requestScope.mealToList}" var="mealTo">
         <tr data-mealExcess="<c:out value="${mealTo.excess ? 'true' : 'false'}" />">
-            <td><c:out value="${mealTo.dateTime.format(DateTimeFormatter.ofPattern(\"dd-MM-yyyy HH:mm\"))}"/></td>
-            <td><c:out value="${mealTo.description}"/></td>
-            <td><c:out value="${mealTo.calories}"/></td>
-            <td><a href="">Update</a></td>
-            <td><a href="">Delete</a></td>
+            <td>${mealTo.dateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"))}</td>
+            <td>${mealTo.description}</td>
+            <td>${mealTo.calories}</td>
+            <td><a href="meals?action=update&id=${mealTo.id}">Update</a></td>
+            <td><a href="meals?action=delete&id=${mealTo.id}">Delete</a></td>
         </tr>
     </c:forEach>
     </tbody>

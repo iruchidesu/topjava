@@ -12,6 +12,18 @@ TABLE {
 }
 
 TD, TH {
-    padding: 5px;
+    padding: 10px;
     border: 1px solid #000000;
+}
+
+.table {
+    margin-bottom: 5px;
+    border-collapse: collapse;
+}
+
+.table td {
+    padding: 5px;
+    border: none;
+    background-color: #f9f9f9;
+    border-bottom: 5px solid #ffffff;
 }
