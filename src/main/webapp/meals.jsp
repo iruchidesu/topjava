@@ -24,7 +24,7 @@
     <tbody>
 
     <c:forEach items="${requestScope.mealToList}" var="mealTo">
-        <tr data-mealExcess="<c:out value="${mealTo.excess ? 'true' : 'false'}" />">
+        <tr data-mealExcess="${mealTo.excess}">
             <td>${mealTo.dateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"))}</td>
             <td>${mealTo.description}</td>
             <td>${mealTo.calories}</td>

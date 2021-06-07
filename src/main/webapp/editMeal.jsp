@@ -12,7 +12,7 @@
 
 <h2>Edit meal</h2>
 <c:set var="meal" value="${requestScope.meal}"/>
-<form method="POST" action='meals?action=save' name="frmAddMeal">
+<form method="POST" action='' name="frmAddMeal">
     <table class="table">
         <tr>
             <td><label for="datetime">DateTime </label></td>
@@ -28,9 +28,8 @@
         </tr>
     </table>
     <input type="submit" value="Save"/>
-    <button><a href="meals" style="text-decoration: none;">Cancel</a></button>
+    <button type="button"><a href="meals" style="text-decoration: none;">Cancel</a></button>
     <input type="hidden" name="id" value="${meal.id}"/>
-    <input type="hidden" name="action" value="save">
 </form>
 </body>
 </html>
