@@ -1,17 +1,19 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
+<c:set var="meal" value="${requestScope.meal}"/>
+<c:set var="addOrEdit" value="${empty meal ? \"Add\" : \"Edit\"}"/>
 <head>
     <link rel="stylesheet" href="resources/css/style.css">
 
-    <title>Edit meal</title>
+    <title>${addOrEdit} meal</title>
 </head>
 <body>
 <h3><a href="index.html">Home</a></h3>
 <hr>
 
-<h2>Edit meal</h2>
-<c:set var="meal" value="${requestScope.meal}"/>
+<h2>${addOrEdit} meal</h2>
+
 <form method="POST" action='' name="frmAddMeal">
     <table class="table">
         <tr>

@@ -3,7 +3,7 @@ package ru.javawebinar.topjava.web;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.javawebinar.topjava.dao.Dao;
-import ru.javawebinar.topjava.dao.MealDaoInMemory;
+import ru.javawebinar.topjava.dao.InMemoryMealDao;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.model.MealTo;
 import ru.javawebinar.topjava.util.MealsUtil;
@@ -15,19 +15,18 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import static ru.javawebinar.topjava.util.MealsUtil.*;
 
 public class MealServlet extends HttpServlet {
     private static final Logger log = LoggerFactory.getLogger(MealServlet.class);
-    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
 
-    private final Dao<Meal, Long> mealDao;
+    private Dao<Meal, Long> mealDao;
 
-    public MealServlet() {
-        mealDao = new MealDaoInMemory();
+    @Override
+    public void init() throws ServletException {
+        mealDao = new InMemoryMealDao();
     }
 
     @Override
@@ -36,8 +35,9 @@ public class MealServlet extends HttpServlet {
 
         switch (action.toLowerCase()) {
             case "delete":
-                mealDao.delete(Long.parseLong(req.getParameter("id")));
-                log.debug("meal deleted");
+                long id = Long.parseLong(req.getParameter("id"));
+                mealDao.delete(id);
+                log.debug("meal ID " + id + " has been deleted");
                 resp.sendRedirect("meals");
                 break;
             case "update":
@@ -59,18 +59,18 @@ public class MealServlet extends HttpServlet {
 
         String idString = req.getParameter("id");
         String datetime = req.getParameter("datetime");
+        LocalDateTime localDateTime = LocalDateTime.parse(datetime);
+        String description = req.getParameter("description");
+        int calories = Integer.parseInt(req.getParameter("calories"));
 
         if (idString == null || idString.isEmpty()) {
-            mealDao.create(new Meal(LocalDateTime.parse(datetime, DATE_TIME_FORMATTER),
-                    req.getParameter("description"),
-                    Integer.parseInt(req.getParameter("calories"))));
-            log.debug("meal created");
+            mealDao.create(new Meal(localDateTime, description, calories));
+            log.debug("new meal created");
         } else {
             long id = Long.parseLong(idString);
-            mealDao.update(new Meal(id, LocalDateTime.parse(datetime, DATE_TIME_FORMATTER),
-                    req.getParameter("description"),
-                    Integer.parseInt(req.getParameter("calories"))));
-            log.debug("meal updated");
+            mealDao.update(new Meal(id, localDateTime, description, calories));
+            log.debug("meal ID " + id + " has been updated. New values {dateTime=" + localDateTime +
+                    ", description=" + description + ", calories=" + calories + "}");
         }
 
         resp.sendRedirect("meals");

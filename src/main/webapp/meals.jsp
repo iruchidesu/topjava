@@ -22,10 +22,10 @@
     </tr>
     </thead>
     <tbody>
-
+    <c:set var="dateTimeFormatter" value="${DateTimeFormatter.ofPattern(\"yyyy-MM-dd HH:mm\")}"/>
     <c:forEach items="${requestScope.mealToList}" var="mealTo">
         <tr data-mealExcess="${mealTo.excess}">
-            <td>${mealTo.dateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"))}</td>
+            <td>${mealTo.dateTime.format(dateTimeFormatter)}</td>
             <td>${mealTo.description}</td>
             <td>${mealTo.calories}</td>
             <td><a href="meals?action=update&id=${mealTo.id}">Update</a></td>

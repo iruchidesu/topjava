@@ -7,8 +7,9 @@ public interface Dao<E, K> {
      * Create new entity
      *
      * @param entity - entity for create
+     * @return - created entity
      */
-    void create(E entity);
+    E create(E entity);
 
     /**
      * Returns list all entity
@@ -29,14 +30,15 @@ public interface Dao<E, K> {
      * Update entity
      *
      * @param entity - entity object
+     * @return - updated entity
      */
-    void update(E entity);
+    E update(E entity);
 
     /**
      * Delete entity
      *
      * @param id - id entity
-     * @return - true if entity is deleted, else false
+     * @return - deleted entity
      */
-    boolean delete(K id);
+    E delete(K id);
 }
