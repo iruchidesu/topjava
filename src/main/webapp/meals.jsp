@@ -1,4 +1,3 @@
-<%@ page import="java.time.format.DateTimeFormatter" %>
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
@@ -22,7 +21,7 @@
     </tr>
     </thead>
     <tbody>
-    <c:set var="dateTimeFormatter" value="${DateTimeFormatter.ofPattern(\"yyyy-MM-dd HH:mm\")}"/>
+    <c:set var="dateTimeFormatter" value="${requestScope.dateTimeFormatter}"/>
     <c:forEach items="${requestScope.mealToList}" var="mealTo">
         <tr data-mealExcess="${mealTo.excess}">
             <td>${mealTo.dateTime.format(dateTimeFormatter)}</td>

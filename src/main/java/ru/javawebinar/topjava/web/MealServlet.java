@@ -15,12 +15,14 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import static ru.javawebinar.topjava.util.MealsUtil.*;
 
 public class MealServlet extends HttpServlet {
     private static final Logger log = LoggerFactory.getLogger(MealServlet.class);
+    private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
     private Dao<Meal, Long> mealDao;
 
@@ -37,7 +39,7 @@ public class MealServlet extends HttpServlet {
             case "delete":
                 long id = Long.parseLong(req.getParameter("id"));
                 mealDao.delete(id);
-                log.debug("meal ID " + id + " has been deleted");
+                log.debug("meal ID {} has been deleted", id);
                 resp.sendRedirect("meals");
                 break;
             case "update":
@@ -49,6 +51,7 @@ public class MealServlet extends HttpServlet {
             default:
                 List<MealTo> mealToList = MealsUtil.filteredByStreams(mealDao.getAll(), LocalTime.MIN, LocalTime.MAX, CALORIES_PER_DAY);
                 req.setAttribute("mealToList", mealToList);
+                req.setAttribute("dateTimeFormatter", dateTimeFormatter);
                 req.getRequestDispatcher("/meals.jsp").forward(req, resp);
         }
     }
@@ -58,8 +61,7 @@ public class MealServlet extends HttpServlet {
         req.setCharacterEncoding("UTF-8");
 
         String idString = req.getParameter("id");
-        String datetime = req.getParameter("datetime");
-        LocalDateTime localDateTime = LocalDateTime.parse(datetime);
+        LocalDateTime localDateTime = LocalDateTime.parse(req.getParameter("datetime"));
         String description = req.getParameter("description");
         int calories = Integer.parseInt(req.getParameter("calories"));
 
@@ -69,8 +71,8 @@ public class MealServlet extends HttpServlet {
         } else {
             long id = Long.parseLong(idString);
             mealDao.update(new Meal(id, localDateTime, description, calories));
-            log.debug("meal ID " + id + " has been updated. New values {dateTime=" + localDateTime +
-                    ", description=" + description + ", calories=" + calories + "}");
+            log.debug("meal ID {} has been updated. New values {dateTime={}, description={}, calories={}}",
+                    id, localDateTime, description, calories);
         }
 
         resp.sendRedirect("meals");
