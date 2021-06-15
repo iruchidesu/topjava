@@ -23,21 +23,22 @@
     <h2>Meals</h2>
 
     <form id="filter" action="" method="get">
+        <input type="hidden" name="action" value="filter">
         <div>
             <label for="startDate">От даты (включая)</label>
-            <input name="startDate" id="startDate" type="date" value="${startDate}">
+            <input name="startDate" id="startDate" type="date" value="${param.startDate}">
         </div>
         <div>
             <label for="endDate">До даты (включая)</label>
-            <input name="endDate" id="endDate" type="date" value="${endDate}">
+            <input name="endDate" id="endDate" type="date" value="${param.endDate}">
         </div>
         <div>
             <label for="startTime">От времени (включая)</label>
-            <input name="startTime" id="startTime" type="time" value="${startTime}">
+            <input name="startTime" id="startTime" type="time" value="${param.startTime}">
         </div>
         <div>
             <label for="endTime">До времени (исключая)</label>
-            <input name="endTime" id="endTime" type="time" value="${endTime}">
+            <input name="endTime" id="endTime" type="time" value="${param.endTime}">
         </div>
         <button type="submit">Filter</button>
     </form>

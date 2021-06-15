@@ -6,15 +6,12 @@ import org.springframework.stereotype.Controller;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.service.MealService;
 import ru.javawebinar.topjava.to.MealTo;
-import ru.javawebinar.topjava.util.DateTimeUtil;
 import ru.javawebinar.topjava.util.MealsUtil;
 import ru.javawebinar.topjava.web.SecurityUtil;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static ru.javawebinar.topjava.util.ValidationUtil.assureIdConsistent;
 import static ru.javawebinar.topjava.util.ValidationUtil.checkNew;
@@ -30,23 +27,29 @@ public class MealRestController {
         this.service = service;
     }
 
-    public List<MealTo> getAllTos() {
+    public List<MealTo> getAll() {
         log.info("getAll");
         return MealsUtil.getTos(service.getAll(authUserId()), SecurityUtil.authUserCaloriesPerDay());
     }
 
-    public List<Meal> getAll() {
-        log.info("getAllMeal");
-        return new ArrayList<>(service.getAll(authUserId()));
-    }
-
     public List<MealTo> getFiltered(LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime) {
         log.info("getFilteredByDate");
-        if (startDate == LocalDate.MAX && endDate == LocalDate.MIN && startTime == LocalTime.MAX && endTime == LocalTime.MIN)
-            return getAllTos();
-        return MealsUtil.getTos(service.getFilteredByDate(authUserId(), startDate, endDate), SecurityUtil.authUserCaloriesPerDay())
-                .stream().filter(mealTo -> DateTimeUtil.isBetweenHalfOpen(mealTo.getDateTime().toLocalTime(), startTime, endTime))
-                .collect(Collectors.toList());
+        if (startDate == null && endDate == null && startTime == null && endTime == null) {
+            return getAll();
+        }
+        if (startDate == null) {
+            startDate = LocalDate.MIN;
+        }
+        if (endDate == null) {
+            endDate = LocalDate.MAX;
+        }
+        if (startTime == null) {
+            startTime = LocalTime.MIN;
+        }
+        if (endTime == null) {
+            endTime = LocalTime.MAX;
+        }
+        return MealsUtil.getFilteredTos(service.getFilteredByDate(authUserId(), startDate, endDate), SecurityUtil.authUserCaloriesPerDay(), startTime, endTime);
     }
 
     public Meal get(int id) {
