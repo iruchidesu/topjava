@@ -1,7 +1,12 @@
 package ru.javawebinar.topjava.service;
 
+import org.junit.AfterClass;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.Stopwatch;
+import org.junit.runner.Description;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.test.context.ContextConfiguration;
@@ -13,8 +18,12 @@ import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.assertThrows;
+import static org.slf4j.LoggerFactory.getLogger;
 import static ru.javawebinar.topjava.MealTestData.*;
 import static ru.javawebinar.topjava.UserTestData.ADMIN_ID;
 import static ru.javawebinar.topjava.UserTestData.USER_ID;
@@ -26,9 +35,33 @@ import static ru.javawebinar.topjava.UserTestData.USER_ID;
 @RunWith(SpringRunner.class)
 @Sql(scripts = "classpath:db/populateDB.sql", config = @SqlConfig(encoding = "UTF-8"))
 public class MealServiceTest {
+    private static final Logger log = getLogger(MealServiceTest.class);
+    private static final List<String> timeSpentTests = new ArrayList<>();
 
     @Autowired
     private MealService service;
+
+    //https://stackoverflow.com/questions/14892125/what-is-the-best-practice-to-determine-the-execution-time-of-the-business-releva
+    private static void logInfo(Description description, long nanos) {
+        String testName = description.getMethodName();
+        long millisecond = TimeUnit.NANOSECONDS.toMillis(nanos);
+        log.info("Test {}, spent {}ms", testName, millisecond);
+        timeSpentTests.add(testName + " : " + millisecond + "ms");
+    }
+
+    @Rule
+    public Stopwatch stopwatch = new Stopwatch() {
+        @Override
+        protected void finished(long nanos, Description description) {
+            logInfo(description, nanos);
+        }
+    };
+
+    @AfterClass
+    public static void spentSummary() {
+        String result = String.join("\n", timeSpentTests);
+        log.info("\n Spent on every test: \n" + result);
+    }
 
     @Test
     public void delete() {
