@@ -42,25 +42,22 @@ public class MealServiceTest {
     private MealService service;
 
     //https://stackoverflow.com/questions/14892125/what-is-the-best-practice-to-determine-the-execution-time-of-the-business-releva
-    private static void logInfo(Description description, long nanos) {
-        String testName = description.getMethodName();
-        long millisecond = TimeUnit.NANOSECONDS.toMillis(nanos);
-        log.info("Test {}, spent {}ms", testName, millisecond);
-        timeSpentTests.add(testName + " : " + millisecond + "ms");
-    }
-
     @Rule
     public Stopwatch stopwatch = new Stopwatch() {
         @Override
         protected void finished(long nanos, Description description) {
-            logInfo(description, nanos);
+            String testName = description.getMethodName();
+            long millisecond = TimeUnit.NANOSECONDS.toMillis(nanos);
+            log.info("Test {}, spent {}ms", testName, millisecond);
+            timeSpentTests.add(String.format("%-25s%7dms", testName, millisecond));
         }
     };
 
     @AfterClass
     public static void spentSummary() {
         String result = String.join("\n", timeSpentTests);
-        log.info("\n Spent on every test: \n" + result);
+        log.info("\n=======Spent on every test:======== \n" + result +
+                "\n===================================");
     }
 
     @Test
