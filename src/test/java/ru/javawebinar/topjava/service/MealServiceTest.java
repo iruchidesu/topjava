@@ -35,7 +35,7 @@ import static ru.javawebinar.topjava.UserTestData.USER_ID;
 @RunWith(SpringRunner.class)
 @Sql(scripts = "classpath:db/populateDB.sql", config = @SqlConfig(encoding = "UTF-8"))
 public class MealServiceTest {
-    private static final Logger log = getLogger(MealServiceTest.class);
+    private static final Logger log = getLogger("colorResult");
     private static final List<String> timeSpentTests = new ArrayList<>();
 
     @Autowired
@@ -49,7 +49,7 @@ public class MealServiceTest {
             String testName = description.getMethodName();
             long millisecond = TimeUnit.NANOSECONDS.toMillis(nanos);
             log.info("Test {}, spent {}ms", testName, millisecond);
-            timeSpentTests.add(String.format("%-25s%7dms", testName, millisecond));
+            timeSpentTests.add(String.format("%-25s %7dms", testName, millisecond));
         }
     };
 
@@ -91,7 +91,6 @@ public class MealServiceTest {
         assertThrows(DataAccessException.class, () ->
                 service.create(new Meal(null, meal1.getDateTime(), "duplicate", 100), USER_ID));
     }
-
 
     @Test
     public void get() {
