@@ -19,7 +19,7 @@ public class JdbcMealRepositoryHsqldb extends AbstractJdbcMealRepository {
 
     //https://stackoverflow.com/questions/45361743/hsqldb-localdatetime-jdbctemplate
     @Override
-    public <T> T getCorrectDateTime(LocalDateTime localDateTime) {
-        return (T) Timestamp.valueOf(localDateTime);
+    public Timestamp getCorrectDateTime(LocalDateTime localDateTime) {
+        return Timestamp.valueOf(localDateTime);
     }
 }

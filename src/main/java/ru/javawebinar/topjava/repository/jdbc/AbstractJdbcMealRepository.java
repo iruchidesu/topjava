@@ -34,7 +34,7 @@ public abstract class AbstractJdbcMealRepository implements MealRepository {
         this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
     }
 
-    public abstract <T> T getCorrectDateTime(LocalDateTime localDateTime);
+    protected abstract <T> T getCorrectDateTime(LocalDateTime localDateTime);
 
     @Override
     public Meal save(Meal meal, int userId) {
@@ -42,7 +42,7 @@ public abstract class AbstractJdbcMealRepository implements MealRepository {
                 .addValue("id", meal.getId())
                 .addValue("description", meal.getDescription())
                 .addValue("calories", meal.getCalories())
-                .addValue("date_time", meal.getDateTime())
+                .addValue("date_time", getCorrectDateTime(meal.getDateTime()))
                 .addValue("user_id", userId);
 
         if (meal.isNew()) {

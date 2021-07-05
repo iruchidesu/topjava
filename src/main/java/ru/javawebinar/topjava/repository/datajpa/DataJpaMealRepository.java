@@ -11,11 +11,11 @@ import java.util.List;
 @Repository
 public class DataJpaMealRepository implements MealRepository {
 
-    private final CrudMealRepository crudRepository;
+    private final CrudMealRepository mealRepository;
     private final CrudUserRepository userRepository;
 
-    public DataJpaMealRepository(CrudMealRepository crudRepository, CrudUserRepository userRepository) {
-        this.crudRepository = crudRepository;
+    public DataJpaMealRepository(CrudMealRepository mealRepository, CrudUserRepository userRepository) {
+        this.mealRepository = mealRepository;
         this.userRepository = userRepository;
     }
 
@@ -27,33 +27,33 @@ public class DataJpaMealRepository implements MealRepository {
         }
         meal.setUser(userRepository.getById(userId));
 
-        return crudRepository.save(meal);
+        return mealRepository.save(meal);
     }
 
     @Override
     public boolean delete(int id, int userId) {
-        return crudRepository.delete(id, userId) != 0;
+        return mealRepository.delete(id, userId) != 0;
     }
 
     @Override
-    @Transactional(readOnly = true)
     public Meal get(int id, int userId) {
-        Meal meal = crudRepository.findById(id).orElse(null);
-        return meal != null && meal.getUser().getId() == userId ? meal : null;
+        return mealRepository.findById(id)
+                .filter(meal -> meal.getUser().getId() == userId)
+                .orElse(null);
     }
 
     @Override
     public List<Meal> getAll(int userId) {
-        return crudRepository.getAll(userId);
+        return mealRepository.getAll(userId);
     }
 
     @Override
     public List<Meal> getBetweenHalfOpen(LocalDateTime startDateTime, LocalDateTime endDateTime, int userId) {
-        return crudRepository.getBetweenHalfOpen(startDateTime, endDateTime, userId);
+        return mealRepository.getBetweenHalfOpen(startDateTime, endDateTime, userId);
     }
 
     @Override
     public Meal getMealByIdWithUser(int id, int userId) {
-        return crudRepository.getMealByIdWithUser(id, userId);
+        return mealRepository.getMealByIdWithUser(id, userId);
     }
 }
