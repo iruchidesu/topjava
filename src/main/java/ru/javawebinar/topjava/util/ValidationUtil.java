@@ -60,7 +60,7 @@ public class ValidationUtil {
         return rootCause != null ? rootCause : t;
     }
 
-    public static <T extends AbstractBaseEntity> void jdbcValidation(T entity) {
+    public static <T> void jdbcValidate(T entity) {
         // https://alexkosarev.name/2018/07/30/bean-validation-api/
         Set<ConstraintViolation<T>> constraintViolations = jdbcValidator.validate(entity);
         if (constraintViolations.size() > 0) {
