@@ -23,7 +23,7 @@ import static ru.javawebinar.topjava.util.DateTimeUtil.parseLocalTime;
 public class JspMealController extends AbstractMealController {
 
     @GetMapping
-    public String get(Model model) {
+    public String getAll(Model model) {
         model.addAttribute("meals", super.getAll());
         return "meals";
     }

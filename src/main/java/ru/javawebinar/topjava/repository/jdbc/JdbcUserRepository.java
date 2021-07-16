@@ -5,6 +5,7 @@ import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.ParameterizedPreparedStatementSetter;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -55,7 +56,7 @@ public class JdbcUserRepository implements UserRepository {
                    UPDATE users SET name=:name, email=:email, password=:password, 
                    registered=:registered, enabled=:enabled, calories_per_day=:caloriesPerDay WHERE id=:id
                 """, parameterSource) != 0) {
-            deleteRoles(user.getId());
+            deleteRoles(user.id());
         } else {
             return null;
         }
@@ -95,20 +96,12 @@ public class JdbcUserRepository implements UserRepository {
     }
 
     private void batchUpdate(User user) {
-        List<Role> roles = new ArrayList<>(user.getRoles());
+        Set<Role> roles = user.getRoles();
         if (!CollectionUtils.isEmpty(roles)) {
-            jdbcTemplate.batchUpdate("INSERT INTO user_roles (user_id, role)  VALUES (?,?)",
-                    new BatchPreparedStatementSetter() {
-                        @Override
-                        public void setValues(PreparedStatement ps, int i) throws SQLException {
-                            ps.setInt(1, user.getId());
-                            ps.setString(2, roles.get(i).name());
-                        }
-
-                        @Override
-                        public int getBatchSize() {
-                            return roles.size();
-                        }
+            jdbcTemplate.batchUpdate("INSERT INTO user_roles (user_id, role)  VALUES (?,?)", roles, roles.size(),
+                    (ps, role) -> {
+                        ps.setInt(1, user.id());
+                        ps.setString(2, role.name());
                     });
         }
     }
