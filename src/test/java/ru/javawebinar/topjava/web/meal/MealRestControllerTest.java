@@ -80,10 +80,23 @@ class MealRestControllerTest extends AbstractControllerTest {
 
     @Test
     void getBetween() throws Exception {
-        perform(MockMvcRequestBuilders.get(REST_URL + "filter?startDateTime=2020-01-31T09:00&endDateTime=2020-01-31T13:30:00"))
+        perform(MockMvcRequestBuilders.get(REST_URL + "filter")
+                .param("startDate", "2020-01-31").param("startTime", "09:00")
+                .param("endDate", "2020-01-31").param("endTime", "13:30"))
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(MEAL_TO_MATCHER.contentJson(MealsUtil.createTo(meal6, true), MealsUtil.createTo(meal5, true)));
+    }
+
+    @Test
+    void getBetweenNullAllParam() throws Exception {
+        perform(MockMvcRequestBuilders.get(REST_URL + "filter")
+                .param("startDate", "").param("startTime", "")
+                .param("endDate", "").param("endTime", ""))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(MEAL_TO_MATCHER.contentJson(getTos(meals, SecurityUtil.authUserCaloriesPerDay())));
     }
 }
