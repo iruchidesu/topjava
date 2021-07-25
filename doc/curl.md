@@ -24,3 +24,11 @@ curl -X PUT -H "Content-Type: application/json" -d "{\"id\": 100002,\"dateTime\"
 ### delete
 
 curl -X DELETE "http://localhost:8080/topjava/rest/meals/100002"
+
+### get with meals profile
+
+curl -X GET "http://localhost:8080/topjava/rest/profile/with-meals"
+
+### get with meals admin
+
+curl -X GET "http://localhost:8080/topjava/rest/admin/users/100001/with-meals"
