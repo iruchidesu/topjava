@@ -29,6 +29,10 @@ public class MatcherFactory<T> {
         return new MatcherFactory<>(clazz, fieldsToIgnore);
     }
 
+    public static <T> MatcherFactory<T> usingEqualsComparator(Class<T> clazz) {
+        return new MatcherFactory<>(clazz);
+    }
+
     public void assertMatch(T actual, T expected) {
         assertThat(actual).usingRecursiveComparison().ignoringFields(fieldsToIgnore).isEqualTo(expected);
     }
@@ -42,6 +46,14 @@ public class MatcherFactory<T> {
         assertThat(actual).usingElementComparatorIgnoringFields(fieldsToIgnore).isEqualTo(expected);
     }
 
+    public void assertMatchEquals(T actual, T expected) {
+        assertThat(actual).isEqualTo(expected);
+    }
+
+    public void assertMatchEquals(Iterable<T> actual, Iterable<T> expected) {
+        assertThat(actual).isEqualTo(expected);
+    }
+
     public ResultMatcher contentJson(T expected) {
         return result -> assertMatch(JsonUtil.readValue(getContent(result), clazz), expected);
     }
@@ -53,6 +65,15 @@ public class MatcherFactory<T> {
 
     public ResultMatcher contentJson(Iterable<T> expected) {
         return result -> assertMatch(JsonUtil.readValues(getContent(result), clazz), expected);
+    }
+
+    @SafeVarargs
+    public final ResultMatcher contentJsonEquals(T... expected) {
+        return contentJsonEquals(List.of(expected));
+    }
+
+    public ResultMatcher contentJsonEquals(Iterable<T> expected) {
+        return result -> assertMatchEquals(JsonUtil.readValues(getContent(result), clazz), expected);
     }
 
     public T readFromJson(ResultActions action) throws UnsupportedEncodingException {
