@@ -7,6 +7,7 @@ import ru.javawebinar.topjava.web.json.JsonUtil;
 
 import java.io.UnsupportedEncodingException;
 import java.util.List;
+import java.util.function.BiConsumer;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -18,23 +19,37 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public class MatcherFactory<T> {
     private final Class<T> clazz;
-    private final String[] fieldsToIgnore;
+    private final BiConsumer<T, T> biConsumerAssert;
+    private final BiConsumer<Iterable<T>, Iterable<T>> iterableBiConsumerAssert;
 
-    private MatcherFactory(Class<T> clazz, String... fieldsToIgnore) {
+    private MatcherFactory(Class<T> clazz,
+                           BiConsumer<T, T> biConsumerAssert,
+                           BiConsumer<Iterable<T>, Iterable<T>> iterableBiConsumerAssert) {
         this.clazz = clazz;
-        this.fieldsToIgnore = fieldsToIgnore;
+        this.biConsumerAssert = biConsumerAssert;
+        this.iterableBiConsumerAssert = iterableBiConsumerAssert;
+    }
+
+    private static <T> MatcherFactory<T> createMatcher(Class<T> clazz,
+                                                       BiConsumer<T, T> biConsumerAssert,
+                                                       BiConsumer<Iterable<T>, Iterable<T>> iterableBiConsumerAssert) {
+        return new MatcherFactory<>(clazz, biConsumerAssert, iterableBiConsumerAssert);
     }
 
     public static <T> MatcherFactory<T> usingIgnoringFieldsComparator(Class<T> clazz, String... fieldsToIgnore) {
-        return new MatcherFactory<>(clazz, fieldsToIgnore);
+        return createMatcher(clazz,
+                (actual, expected) -> assertThat(actual).usingRecursiveComparison().ignoringFields(fieldsToIgnore).isEqualTo(expected),
+                (actual, expected) -> assertThat(actual).usingElementComparatorIgnoringFields(fieldsToIgnore).isEqualTo(expected));
     }
 
     public static <T> MatcherFactory<T> usingEqualsComparator(Class<T> clazz) {
-        return new MatcherFactory<>(clazz);
+        return createMatcher(clazz,
+                (actual, expected) -> assertThat(actual).isEqualTo(expected),
+                (actual, expected) -> assertThat(actual).isEqualTo(expected));
     }
 
     public void assertMatch(T actual, T expected) {
-        assertThat(actual).usingRecursiveComparison().ignoringFields(fieldsToIgnore).isEqualTo(expected);
+        biConsumerAssert.accept(actual, expected);
     }
 
     @SafeVarargs
@@ -43,15 +58,7 @@ public class MatcherFactory<T> {
     }
 
     public void assertMatch(Iterable<T> actual, Iterable<T> expected) {
-        assertThat(actual).usingElementComparatorIgnoringFields(fieldsToIgnore).isEqualTo(expected);
-    }
-
-    public void assertMatchEquals(T actual, T expected) {
-        assertThat(actual).isEqualTo(expected);
-    }
-
-    public void assertMatchEquals(Iterable<T> actual, Iterable<T> expected) {
-        assertThat(actual).isEqualTo(expected);
+        iterableBiConsumerAssert.accept(actual, expected);
     }
 
     public ResultMatcher contentJson(T expected) {
@@ -65,15 +72,6 @@ public class MatcherFactory<T> {
 
     public ResultMatcher contentJson(Iterable<T> expected) {
         return result -> assertMatch(JsonUtil.readValues(getContent(result), clazz), expected);
-    }
-
-    @SafeVarargs
-    public final ResultMatcher contentJsonEquals(T... expected) {
-        return contentJsonEquals(List.of(expected));
-    }
-
-    public ResultMatcher contentJsonEquals(Iterable<T> expected) {
-        return result -> assertMatchEquals(JsonUtil.readValues(getContent(result), clazz), expected);
     }
 
     public T readFromJson(ResultActions action) throws UnsupportedEncodingException {

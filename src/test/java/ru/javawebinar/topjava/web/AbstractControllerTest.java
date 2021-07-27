@@ -29,13 +29,13 @@ public abstract class AbstractControllerTest {
 
     private static final CharacterEncodingFilter CHARACTER_ENCODING_FILTER = new CharacterEncodingFilter();
 
-    @Autowired
-    public Environment env;
-
     static {
         CHARACTER_ENCODING_FILTER.setEncoding("UTF-8");
         CHARACTER_ENCODING_FILTER.setForceEncoding(true);
     }
+
+    @Autowired
+    private Environment env;
 
     private MockMvc mockMvc;
 
