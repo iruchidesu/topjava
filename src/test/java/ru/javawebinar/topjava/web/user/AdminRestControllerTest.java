@@ -97,7 +97,6 @@ class AdminRestControllerTest extends AbstractControllerTest {
 
     @Test
     void enable() throws Exception {
-        assumeDataJpa();
         User updated = new User(user);
         updated.setEnabled(false);
         perform(MockMvcRequestBuilders.patch(REST_URL + USER_ID)

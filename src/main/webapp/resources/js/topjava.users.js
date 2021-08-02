@@ -24,6 +24,8 @@ function enable(chkbox, id) {
         }).fail(function () {
             $(chkbox).prop("checked", !enabled);
         });
+    } else {
+        $(chkbox).prop("checked", !enabled);
     }
 }
 

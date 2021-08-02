@@ -3,7 +3,6 @@ package ru.javawebinar.topjava.service;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
-import ru.javawebinar.topjava.UserTestData;
 import ru.javawebinar.topjava.model.Role;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
@@ -76,6 +75,19 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
     void getAll() {
         List<User> all = service.getAll();
         MATCHER.assertMatch(all, admin, user);
+    }
+
+    @Test
+    void enable() {
+        User updated = new User(user);
+        updated.setEnabled(false);
+
+        service.enable(USER_ID, false);
+        MATCHER.assertMatch(service.get(USER_ID), updated);
+
+        updated.setEnabled(true);
+        service.enable(USER_ID, true);
+        MATCHER.assertMatch(service.get(USER_ID), updated);
     }
 
     @Test
