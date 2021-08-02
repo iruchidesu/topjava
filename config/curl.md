@@ -7,6 +7,12 @@
 #### get Users 100001
 `curl -s http://localhost:8080/topjava/rest/admin/users/100001 --user admin@gmail.com:admin`
 
+#### disable User 100000
+`curl -s -X PATCH -d 'false' -H 'Content-Type: application/json' http://localhost:8080/topjava/rest/admin/users/100000 --user admin@gmail.com:admin`
+
+#### enable User 100000
+`curl -s -X PATCH -d 'true' -H 'Content-Type: application/json' http://localhost:8080/topjava/rest/admin/users/100000 --user admin@gmail.com:admin`
+
 #### get All Meals
 `curl -s http://localhost:8080/topjava/rest/profile/meals --user user@yandex.ru:password`
 
@@ -27,3 +33,4 @@
 
 #### update Meals
 `curl -s -X PUT -d '{"dateTime":"2020-01-30T07:00", "description":"Updated breakfast", "calories":200}' -H 'Content-Type: application/json' http://localhost:8080/topjava/rest/profile/meals/100003 --user user@yandex.ru:password`
+

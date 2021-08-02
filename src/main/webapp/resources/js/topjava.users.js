@@ -1,9 +1,14 @@
 const userAjaxUrl = "admin/users/";
 
 // https://stackoverflow.com/a/5064235/548473
-const ctx = {
-    ajaxUrl: userAjaxUrl
+let ctx = {
+    ajaxUrl: userAjaxUrl,
+    updateTable: updateTable
 };
+
+function updateTable() {
+    $.get(ctx.ajaxUrl, updateTableReDraw)
+}
 
 function enable(chkbox, id) {
     let enabled = chkbox.is(":checked");
