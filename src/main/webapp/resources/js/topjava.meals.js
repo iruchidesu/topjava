@@ -77,24 +77,52 @@ $(function () {
     $.datetimepicker.setLocale(i18n["localCode"]);
 
 //  http://xdsoft.net/jqplugins/datetimepicker/
-    $('#startDate').datetimepicker({
+    let endDate = $('#endDate');
+    let startDate = $('#startDate')
+
+    startDate.datetimepicker({
         timepicker: false,
         format: 'Y-m-d',
         formatDate: 'Y-m-d',
-    });
-    $('#endDate').datetimepicker({
-        timepicker: false,
-        format: 'Y-m-d',
-        formatDate: 'Y-m-d',
+        onShow: function (current_time) {
+
+            this.setOptions({
+                maxDate: endDate.val() ? endDate.val() : false
+            })
+        }
     });
 
-    $('#startTime').datetimepicker({
-        datepicker: false,
-        format: 'H:i',
+    endDate.datetimepicker({
+        timepicker: false,
+        format: 'Y-m-d',
+        formatDate: 'Y-m-d',
+        onShow: function (current_time) {
+            this.setOptions({
+                minDate: startDate.val() ? startDate.val() : false
+            })
+        }
     });
-    $('#endTime').datetimepicker({
+
+    let endTime = $('#endTime');
+    let startTime = $('#startTime')
+
+    startTime.datetimepicker({
         datepicker: false,
         format: 'H:i',
+        onShow: function (current_time) {
+            this.setOptions({
+                maxTime: endTime.val() ? endTime.val() : false
+            })
+        }
+    });
+    endTime.datetimepicker({
+        datepicker: false,
+        format: 'H:i',
+        onShow: function (current_time) {
+            this.setOptions({
+                minTime: startTime.val() ? startTime.val() : false
+            })
+        }
     });
 
     $('#dateTime').datetimepicker({
