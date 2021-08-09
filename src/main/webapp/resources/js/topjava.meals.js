@@ -22,11 +22,13 @@ $.ajaxSetup({
     converters: {
         "text json": function (text) {
             let json = JSON.parse(text);
-            $(json).each(function () {
-                if (this.hasOwnProperty("dateTime")) {
-                    this.dateTime = this.dateTime.substr(0, 16).replace('T', ' ');
-                }
-            });
+            if (typeof json === 'object') {
+                $(json).each(function () {
+                    if (this.hasOwnProperty("dateTime")) {
+                        this.dateTime = this.dateTime.substr(0, 16).replace('T', ' ');
+                    }
+                });
+            }
             return json;
         }
     }
