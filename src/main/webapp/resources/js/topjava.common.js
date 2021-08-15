@@ -108,9 +108,11 @@ function renderDeleteBtn(data, type, row) {
 function failNoty(jqXHR) {
     closeNoty();
     var errorInfo = jqXHR.responseJSON;
+    let message = errorInfo.type === 'VALIDATION_ERROR' ? i18n["exception.validationError"] : errorInfo.type;
+    debugger;
     failedNote = new Noty({
         text: "<span class='fa fa-lg fa-exclamation-circle'></span> &nbsp;" + i18n["common.errorStatus"] + ": " + jqXHR.status +
-            "<br>" + errorInfo.type + "<br>" + errorInfo.detail,
+            "<br>" + message + "<br>" + errorInfo.detail,
         type: "error",
         layout: "bottomRight"
     });
