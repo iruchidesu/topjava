@@ -14,7 +14,6 @@ import static ru.javawebinar.topjava.util.ValidationUtil.assureIdConsistent;
 import static ru.javawebinar.topjava.util.ValidationUtil.checkNew;
 
 public abstract class AbstractUserController {
-    public static final String EMAIL_ALREADY_EXISTS = "exception.emailError";
 
     protected final Logger log = LoggerFactory.getLogger(getClass());
 
