@@ -108,11 +108,26 @@ function renderDeleteBtn(data, type, row) {
 function failNoty(jqXHR) {
     closeNoty();
     var errorInfo = jqXHR.responseJSON;
-    let message = errorInfo.type === 'VALIDATION_ERROR' ? i18n["exception.validationError"] : errorInfo.type;
-    debugger;
+    let message;
+    switch (errorInfo.type) {
+        case 'VALIDATION_ERROR':
+            message = i18n["exception.validationError"];
+            break;
+        case 'APP_ERROR':
+            message = i18n["exception.appError"];
+            break;
+        case 'DATA_NOT_FOUND':
+            message = i18n["exception.dataNotFound"];
+            break;
+        case 'DATA_ERROR':
+            message = i18n["exception.dataError"];
+            break;
+        default:
+            message = errorInfo.type;
+    }
     failedNote = new Noty({
         text: "<span class='fa fa-lg fa-exclamation-circle'></span> &nbsp;" + i18n["common.errorStatus"] + ": " + jqXHR.status +
-            "<br>" + message + "<br>" + errorInfo.detail,
+            "<br>" + message + "<br>" + errorInfo.details.join("<br>"),
         type: "error",
         layout: "bottomRight"
     });

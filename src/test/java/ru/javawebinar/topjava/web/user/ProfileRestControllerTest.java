@@ -15,10 +15,9 @@ import ru.javawebinar.topjava.util.exception.ErrorType;
 import ru.javawebinar.topjava.web.AbstractControllerTest;
 import ru.javawebinar.topjava.web.json.JsonUtil;
 
-import java.util.Locale;
-
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static ru.javawebinar.topjava.TestUtil.userHttpBasic;
 import static ru.javawebinar.topjava.UserTestData.*;
 import static ru.javawebinar.topjava.web.ExceptionInfoHandler.EMAIL_ALREADY_EXISTS;
@@ -100,7 +99,7 @@ class ProfileRestControllerTest extends AbstractControllerTest {
                 .content(JsonUtil.writeValue(invalidUser)))
                 .andDo(print())
                 .andExpect(status().isUnprocessableEntity())
-                .andExpect(jsonPath("$.type").value(ErrorType.VALIDATION_ERROR.name()));
+                .andExpect(getTypeValue(ErrorType.VALIDATION_ERROR));
     }
 
     @Test
@@ -112,7 +111,7 @@ class ProfileRestControllerTest extends AbstractControllerTest {
                 .with(userHttpBasic(user)))
                 .andDo(print())
                 .andExpect(status().isUnprocessableEntity())
-                .andExpect(jsonPath("$.type").value(ErrorType.VALIDATION_ERROR.name()));
+                .andExpect(getTypeValue(ErrorType.VALIDATION_ERROR));
     }
 
     @Test
@@ -124,8 +123,8 @@ class ProfileRestControllerTest extends AbstractControllerTest {
                 .content(JsonUtil.writeValue(invalidUser)))
                 .andDo(print())
                 .andExpect(status().isConflict())
-                .andExpect(jsonPath("$.type").value(ErrorType.VALIDATION_ERROR.name()))
-                .andExpect(jsonPath("$.detail").value(messageSourceAccessor.getMessage(EMAIL_ALREADY_EXISTS, Locale.ENGLISH)));
+                .andExpect(getTypeValue(ErrorType.VALIDATION_ERROR))
+                .andExpect(getDetailValue(EMAIL_ALREADY_EXISTS));
     }
 
     @Test
@@ -138,7 +137,7 @@ class ProfileRestControllerTest extends AbstractControllerTest {
                 .with(userHttpBasic(user)))
                 .andDo(print())
                 .andExpect(status().isConflict())
-                .andExpect(jsonPath("$.type").value(ErrorType.VALIDATION_ERROR.name()))
-                .andExpect(jsonPath("$.detail").value(messageSourceAccessor.getMessage(EMAIL_ALREADY_EXISTS, Locale.ENGLISH)));
+                .andExpect(getTypeValue(ErrorType.VALIDATION_ERROR))
+                .andExpect(getDetailValue(EMAIL_ALREADY_EXISTS));
     }
 }

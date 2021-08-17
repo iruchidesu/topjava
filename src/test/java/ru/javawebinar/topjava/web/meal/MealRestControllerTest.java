@@ -15,11 +15,10 @@ import ru.javawebinar.topjava.util.exception.NotFoundException;
 import ru.javawebinar.topjava.web.AbstractControllerTest;
 import ru.javawebinar.topjava.web.json.JsonUtil;
 
-import java.util.Locale;
-
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static ru.javawebinar.topjava.MealTestData.*;
 import static ru.javawebinar.topjava.TestUtil.userHttpBasic;
 import static ru.javawebinar.topjava.UserTestData.USER_ID;
@@ -138,7 +137,7 @@ class MealRestControllerTest extends AbstractControllerTest {
                 .with(userHttpBasic(user)))
                 .andDo(print())
                 .andExpect(status().isUnprocessableEntity())
-                .andExpect(jsonPath("$.type").value(ErrorType.VALIDATION_ERROR.name()));
+                .andExpect(getTypeValue(ErrorType.VALIDATION_ERROR));
     }
 
     @Test
@@ -151,7 +150,7 @@ class MealRestControllerTest extends AbstractControllerTest {
                 .with(userHttpBasic(user)))
                 .andDo(print())
                 .andExpect(status().isUnprocessableEntity())
-                .andExpect(jsonPath("$.type").value(ErrorType.VALIDATION_ERROR.name()));
+                .andExpect(getTypeValue(ErrorType.VALIDATION_ERROR));
     }
 
     @Test
@@ -164,8 +163,8 @@ class MealRestControllerTest extends AbstractControllerTest {
                 .with(userHttpBasic(user)))
                 .andDo(print())
                 .andExpect(status().isConflict())
-                .andExpect(jsonPath("$.type").value(ErrorType.VALIDATION_ERROR.name()))
-                .andExpect(jsonPath("$.detail").value(messageSourceAccessor.getMessage(DATETIME_ALREADY_EXISTS, Locale.ENGLISH)));
+                .andExpect(getTypeValue(ErrorType.VALIDATION_ERROR))
+                .andExpect(getDetailValue(DATETIME_ALREADY_EXISTS));
     }
 
     @Test
@@ -178,7 +177,7 @@ class MealRestControllerTest extends AbstractControllerTest {
                 .with(userHttpBasic(user)))
                 .andDo(print())
                 .andExpect(status().isConflict())
-                .andExpect(jsonPath("$.type").value(ErrorType.VALIDATION_ERROR.name()))
-                .andExpect(jsonPath("$.detail").value(messageSourceAccessor.getMessage(DATETIME_ALREADY_EXISTS, Locale.ENGLISH)));
+                .andExpect(getTypeValue(ErrorType.VALIDATION_ERROR))
+                .andExpect(getDetailValue(DATETIME_ALREADY_EXISTS));
     }
 }
